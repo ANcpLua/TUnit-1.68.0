@@ -16,12 +16,4 @@
     <PackageReference Include="TUnit" Version="1.6*" />
   </ItemGroup>
 
-  <!-- AgentHosting/ — provider-agnostic Responses hosting surface, exercised against a live Anthropic model. -->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Agents.AI" Version="1.15.0" />
-    <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.15.0-preview.260722.1" />
-    <PackageReference Include="Microsoft.Agents.AI.Hosting" Version="1.15.0-preview.260722.1" />
-    <PackageReference Include="Microsoft.Agents.AI.Hosting.OpenAI" Version="1.15.0-alpha.260722.1" />
-  </ItemGroup>
-
 </Project>
