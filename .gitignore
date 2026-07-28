@@ -1,6 +1,4 @@
-bin/
-obj/
-TestResults/
+artifacts/
 *.user
 .DS_Store
 .idea/
