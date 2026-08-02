@@ -1,7 +1,0 @@
-<Solution>
-  <Project Path="TUnit 1.61.38/TUnit 1.61.38/TUnit 1.61.38.csproj" />
-  <Project Path="TUnit 1.61.38/WebApp/WebApp.csproj" />
-  <Project Path="TUnit.Mixed 1.61.38/TUnit.Mixed 1.61.38.csproj" />
-  <Project Path="AdvancedPatterns/AdvancedPatterns.Tests.csproj" />
-  <Project Path="TUnit.Playwright 1.61.38/TUnit.Playwright 1.61.38.csproj" />
-</Solution>

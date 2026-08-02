@@ -1,6 +1,6 @@
 using TUnit.Core.Interfaces;
 
-namespace TUnit.Mixed_1._61._38;
+namespace TUnit.Mixed_1._63._0;
 
 public class InMemoryDb : IAsyncInitializer, IAsyncDisposable
 {

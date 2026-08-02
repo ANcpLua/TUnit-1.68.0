@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: ExcludeFromCodeCoverage]
 
-namespace TUnit.Mixed_1._61._38;
+namespace TUnit.Mixed_1._63._0;
 
 public static class GlobalHooks
 {
