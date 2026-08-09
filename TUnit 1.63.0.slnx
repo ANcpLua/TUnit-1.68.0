@@ -1,9 +1,0 @@
-<Solution>
-  <Project Path="TUnit 1.63.0/TUnit 1.63.0/TUnit 1.63.0.csproj" />
-  <Project Path="TUnit 1.63.0/WebApp/WebApp.csproj" />
-  <Project Path="TUnit.Mixed 1.63.0/TUnit.Mixed 1.63.0.csproj" />
-  <Project Path="TUnit.Mocks 1.63.0/TUnit.Mocks 1.63.0/TUnit.Mocks 1.63.0.csproj" />
-  <Project Path="TUnit.Mocks 1.63.0/VendorSdk/VendorSdk.csproj" />
-  <Project Path="AdvancedPatterns/AdvancedPatterns.Tests.csproj" />
-  <Project Path="TUnit.Playwright 1.63.0/TUnit.Playwright 1.63.0.csproj" />
-</Solution>

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace TUnit.Playwright_1._63._0;
+namespace TUnit.Playwright_1._64._0;
 
 public class Hooks
 {

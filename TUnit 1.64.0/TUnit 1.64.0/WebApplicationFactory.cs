@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using TUnit.Core.Interfaces;
 
-namespace TUnit_1._63._0;
+namespace TUnit_1._64._0;
 
 public class WebApplicationFactory : WebApplicationFactory<Program>, IAsyncInitializer
 {

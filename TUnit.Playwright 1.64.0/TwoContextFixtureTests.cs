@@ -3,7 +3,7 @@ using TUnit.Assertions.Extensions;
 using TUnit.Core;
 using TUnit.Playwright;
 
-namespace TUnit.Playwright_1._63._0;
+namespace TUnit.Playwright_1._64._0;
 
 public class TwoContextFixtureTests
 {

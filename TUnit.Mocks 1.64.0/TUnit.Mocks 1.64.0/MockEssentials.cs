@@ -1,7 +1,7 @@
 using TUnit.Mocks;
 using TUnit.Mocks.Exceptions;
 
-namespace TUnit.Mocks_1._63._0;
+namespace TUnit.Mocks_1._64._0;
 
 public interface IUserDirectory
 {
