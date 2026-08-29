@@ -6,5 +6,6 @@
   <Project Path="TUnit.Mocks 1.65.68/VendorSdk/VendorSdk.csproj" />
   <Project Path="AdvancedPatterns/AdvancedPatterns.Tests.csproj" />
   <Project Path="TUnit.Patterns 1.65.68/TUnit.Patterns 1.65.68.csproj" />
+  <Project Path="TUnit.Patterns.Policies 1.65.68/TUnit.Patterns.Policies 1.65.68.csproj" />
   <Project Path="TUnit.Playwright 1.65.68/TUnit.Playwright 1.65.68.csproj" />
 </Solution>
