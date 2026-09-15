@@ -13,13 +13,34 @@ Schema (fixed columns, one table per area, no merged cells):
 - `Since` is the TUnit version that introduced or last changed the member (`≤1.61` = long-standing)
 - All rows are verified by running the projects on the pinned version, not by reading the docs
 
-## [1.65.68] — 2026-08-29
+## [1.67.0] — 2026-09-15
 
-Packages: `TUnit 1.65.68` · `TUnit.Mocks 1.65.68` · `TUnit.Playwright 1.65.68` · `Microsoft.AspNetCore.Mvc.Testing 10.0.10` · SDK `10.0.400` · `net10.0`
-Projects: `TUnit.Patterns 1.65.68` (196 pass, 2 intentional skips) · `TUnit.Patterns.Policies 1.65.68` (10; also published Native AOT) · `TUnit.Mixed 1.65.68` (29) · `TUnit.Mocks 1.65.68` (15) · `TUnit 1.65.68` + `TUnit.AspNetCore` (5) · `AdvancedPatterns` (10 + 2 key-gated skips) · `TUnit.Playwright 1.65.68` (builds; needs browsers to run)
-Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.68` · `TUnit.AspNetCore 1.65.68` · `OpenTelemetry.Exporter.InMemory 1.18.0` · `Microsoft.Extensions.Diagnostics.Testing 10.9.0` · `Microsoft.Extensions.Logging 10.0.11` · `Microsoft.AspNetCore.Mvc.Testing 10.0.11`
+Packages: `TUnit 1.67.0` · `TUnit.Mocks 1.67.0` · `TUnit.Playwright 1.67.0` · `Microsoft.AspNetCore.Mvc.Testing 10.0.12` · SDK `10.0.401` · `net10.0`
+Projects: `TUnit.Patterns 1.67.0` (204 pass, 2 intentional skips) · `TUnit.Patterns.Policies 1.67.0` (11; also published Native AOT) · `TUnit.Mixed 1.67.0` (29) · `TUnit.Mocks 1.67.0` (16) · `TUnit 1.67.0` + `TUnit.AspNetCore` (5) · `AdvancedPatterns` (10 + 2 key-gated skips) · `TUnit.Playwright 1.67.0` (builds; needs browsers to run)
+Extra packages: `TUnit.OpenTelemetry 1.67.0` · `TUnit.Logging.Microsoft 1.67.0` · `TUnit.AspNetCore 1.67.0` · `OpenTelemetry.Exporter.InMemory 1.18.0` · `Microsoft.Extensions.Diagnostics.Testing 10.9.0` · `Microsoft.Extensions.Logging 10.0.12`
+`Microsoft.Extensions.Logging` and `Microsoft.AspNetCore.Mvc.Testing` move to 10.0.12 because the 1.67.0 packages require it (NU1605 otherwise).
 
-### Ordering and dependencies — `TUnit.Patterns 1.65.68/Ordering`
+### Since 1.65.68 — 1.66.0 · 1.66.8 · 1.66.10 · 1.66.16 · 1.66.27 · 1.67.0
+
+New public API (diff of the `TUnit.PublicAPI` snapshots):
+
+- `TUnitSettings.Reporting` → `ReportingSettings { HtmlReportEnabled, JsonReportEnabled, ArtifactUploadEnabled }` (1.66.0, #6699) — see *Reporting*
+- `Assert.That(Type?)` → `TypeValueAssertion` with represented-type `IsAssignableTo<T>` / `IsAssignableFrom<T>` / `IsNotAssignableTo<T>` / `IsNotAssignableFrom<T>`, plus `IsAssignableTo(Type)` / `IsAssignableFrom(Type)` (1.66.0, #6711) — see *Assertions*
+
+Behaviour changes with an example; each of these tests fails on 1.65.68 and passes on 1.67.0:
+
+- `GetIsolatedName` is lowercase, `test_{id}_{name}` (1.66.16, #6728, breaking) → `ContextTests.Isolation_helpers_produce_unique_resource_names`
+- all concurrent failures inside `Assert.Multiple` are kept, and `.And` / `.Or` chains only consume their own (1.66.16, #6730) → `MultipleTests`
+- class mocks whose base constructor calls virtual / abstract members (1.66.27, #6741) → `ConstructorCallbackTests`
+- executors installed through `SetTestExecutor` / `SetHookExecutor` receive `OnTestRegistered`; an explicit `[ParallelLimiter<T>]` beats a programmatic limiter (1.67.0, #6768) → `ExecutorRegistrationTests`
+
+Also shown, `[Explicit]`: an exception thrown while a test handles its timeout is reported with the timeout (1.66.0, #6715; classification race fixed in 1.67.0, #6768) → `TimeoutDiagnosticsShowcase`.
+
+Not shown (not observable from a CLI run of these projects): inner exceptions folded into IDE / TRX failure output (1.67.0, #6777) · `Should().NotBeNull()` nullability suppression (1.66.8 / 1.66.10, #6700 / #6725) · `TUnit.Mocks.Http` keeps the original request content (1.66.16, #6731) · `--report-html-filename` becomes `--tunit-report-html-filename` when `Microsoft.Testing.Extensions.HtmlReport` is referenced too (1.66.8, #6677) · source-generator performance work (1.67.0).
+
+Withdrawn divergence: `TestRegisteredContext.SetTestExecutor` was listed as missing on 1.65.68; it is public there too and is now exercised by `ExecutorRegistrationTests`.
+
+### Ordering and dependencies — `TUnit.Patterns 1.67.0/Ordering`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -31,7 +52,7 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `DependsOnAttribute<TClass>(string)` | `TUnit.Core` | attribute | `Ordering/DependsOnTests.cs` | `CrossClassDependsOnTests` | ≤1.61 | cross-class dependency |
 | `DependsOnAttribute.ProceedOnFailure` + `Dependencies.GetTests(...).Execution.Result.Exception` | `TUnit.Core` | property | `Ordering/DependsOnTests.cs` | `ProceedOnFailureShowcase` (`[Explicit]`, run via tree-node filter: 1 failed, 1 passed) | ≤1.61 | |
 
-### Parallelism — `TUnit.Patterns 1.65.68/Parallelism`
+### Parallelism — `TUnit.Patterns 1.67.0/Parallelism`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -39,10 +60,10 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `RepeatAttribute(int)` | `TUnit.Core` | attribute | `Parallelism/ParallelismTests.cs` | `ParallelLimiterTests` | ≤1.61 | `(RepeatIndex: n)` display suffix |
 | `NotInParallelAttribute(string key)` | `TUnit.Core` | attribute | `Parallelism/ParallelismTests.cs` | `NotInParallelKeyTests` (holders == 1) | ≤1.61 | |
 | `ParallelGroupAttribute(string)` | `TUnit.Core` | attribute | `Parallelism/ParallelGroupTests.cs` | `UserRepositoryTests`, `OrderRepositoryTests`, `PaymentApiTests` (other group count == 0) | ≤1.61 | groups never overlap each other |
-| `[assembly: ParallelLimiter<T>]` | `TUnit.Core` | attribute | `TUnit.Patterns.Policies 1.65.68/AssemblyPolicies.cs` | `PolicyTests` | ≤1.61 | replaces a class-level limiter on 1.65.68 (see divergences) |
-| `[assembly: NotInParallel]` | `TUnit.Core` | attribute | `TUnit.Patterns.Policies 1.65.68/AssemblyPolicies.cs` | `PolicyTests`, `SecondClassTests` (running == 1 across classes) | ≤1.61 | |
+| `[assembly: ParallelLimiter<T>]` | `TUnit.Core` | attribute | `TUnit.Patterns.Policies 1.67.0/AssemblyPolicies.cs` | `PolicyTests` | ≤1.61 | replaces class- and method-level limiters on 1.67.0 (see divergences) |
+| `[assembly: NotInParallel]` | `TUnit.Core` | attribute | `TUnit.Patterns.Policies 1.67.0/AssemblyPolicies.cs` | `PolicyTests`, `SecondClassTests` (running == 1 across classes) | ≤1.61 | |
 
-### Retry — `TUnit.Patterns 1.65.68/Retry`
+### Retry — `TUnit.Patterns 1.67.0/Retry`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -52,10 +73,10 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `TestContext.Execution.CurrentRetryAttempt` | `TUnit.Core.Interfaces.ITestExecution` | property | `Retry/RetryTests.cs` | `RetryTests` | 1.6x | 0-based |
 | `TestContext.Execution.RetryAttempts` | `TUnit.Core.Interfaces.ITestExecution` | property | `Retry/RetryTests.cs` | `RetryTests` | 1.6x | failed prior attempts, empty when none |
 | `[Timeout]` + `[Retry]` interplay (fresh timeout per attempt) | `TUnit.Core` | attribute | `Extensions/RegistrationTests.cs` | `TimeoutRetryTests` (attempt 0 times out, attempt 1 passes) | ≤1.61 | |
-| `[assembly: Retry(n)]` → `Metadata.TestDetails.RetryLimit` | `TUnit.Core` | attribute, property | `TUnit.Patterns.Policies 1.65.68/AssemblyPolicies.cs` | `PolicyTests.Assembly_wide_retry_limit_is_visible_on_the_test_details` | ≤1.61 | |
-| `[assembly: Timeout(ms)]` → `Metadata.TestDetails.Timeout` | `TUnit.Core` | attribute, property | `TUnit.Patterns.Policies 1.65.68/AssemblyPolicies.cs` | `PolicyTests.Assembly_wide_timeout_is_visible_on_the_test_details` | ≤1.61 | |
+| `[assembly: Retry(n)]` → `Metadata.TestDetails.RetryLimit` | `TUnit.Core` | attribute, property | `TUnit.Patterns.Policies 1.67.0/AssemblyPolicies.cs` | `PolicyTests.Assembly_wide_retry_limit_is_visible_on_the_test_details` | ≤1.61 | |
+| `[assembly: Timeout(ms)]` → `Metadata.TestDetails.Timeout` | `TUnit.Core` | attribute, property | `TUnit.Patterns.Policies 1.67.0/AssemblyPolicies.cs` | `PolicyTests.Assembly_wide_timeout_is_visible_on_the_test_details` | ≤1.61 | |
 
-### Data sources — `TUnit.Patterns 1.65.68/Data`, `TUnit.Mixed 1.65.68`
+### Data sources — `TUnit.Patterns 1.67.0/Data`, `TUnit.Mixed 1.67.0`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -68,16 +89,16 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `AsyncDataSourceGeneratorAttribute<T1, T2>.GenerateDataSourcesAsync` | `TUnit.Core` | class | `Data/FibonacciAttribute.cs` | `AsyncGeneratorTests` | ≤1.61 | runs at discovery |
 | `UntypedDataSourceGeneratorAttribute.GenerateDataSources` | `TUnit.Core` | class | `Data/BatchesAttribute.cs` | `TrailingArrayTests` (`(batch, 1, 2, 3)`) | ≤1.61 | |
 | `object[]` → trailing `int[]` element-wise conversion | engine | — | `Data/DataTests.cs` | `TrailingArrayTests` | 1.65.68 | fix #6681 |
-| `ArgumentsAttribute` (method and class level) | `TUnit.Core` | attribute | `TUnit.Mixed 1.65.68/DataDrivenTests.cs` | `DataDrivenTests`, `ClassLevelArgumentTests` | ≤1.61 | |
-| `MethodDataSourceAttribute` (tuple rows) | `TUnit.Core` | attribute | `TUnit.Mixed 1.65.68/DataDrivenTests.cs` | `DataDrivenTests.Subtract_WithMethodDataSource` | ≤1.61 | |
-| `DataSourceGeneratorAttribute<T1, T2, T3>` | `TUnit.Core` | class | `TUnit.Mixed 1.65.68/Data/AdditionDataGenerator.cs` | `DataDrivenTests.Add_WithCustomDataGenerator` | ≤1.61 | |
-| `MatrixDataSourceAttribute` + `MatrixAttribute` | `TUnit.Core` | attribute | `TUnit.Mixed 1.65.68/DataDrivenTests.cs` | `DataDrivenTests.Multiply_AllCombinations` | ≤1.61 | |
+| `ArgumentsAttribute` (method and class level) | `TUnit.Core` | attribute | `TUnit.Mixed 1.67.0/DataDrivenTests.cs` | `DataDrivenTests`, `ClassLevelArgumentTests` | ≤1.61 | |
+| `MethodDataSourceAttribute` (tuple rows) | `TUnit.Core` | attribute | `TUnit.Mixed 1.67.0/DataDrivenTests.cs` | `DataDrivenTests.Subtract_WithMethodDataSource` | ≤1.61 | |
+| `DataSourceGeneratorAttribute<T1, T2, T3>` | `TUnit.Core` | class | `TUnit.Mixed 1.67.0/Data/AdditionDataGenerator.cs` | `DataDrivenTests.Add_WithCustomDataGenerator` | ≤1.61 | |
+| `MatrixDataSourceAttribute` + `MatrixAttribute` | `TUnit.Core` | attribute | `TUnit.Mixed 1.67.0/DataDrivenTests.cs` | `DataDrivenTests.Multiply_AllCombinations` | ≤1.61 | |
 | `MethodDataSourceAttribute<TClass>(string)` | `TUnit.Core` | attribute | `Data/MoreDataSources.cs` | `MoreDataSourceTests.Generic_method_data_source` | ≤1.61 | source class must be non-static |
 | `TypedDataSourceAttribute<T>.GetTypedDataRowsAsync` | `TUnit.Core` | class | `Data/MoreDataSources.cs` | `MoreDataSourceTests.Typed_data_source_yields_instances` | ≤1.61 | `IAsyncEnumerable<Func<Task<T>>>` |
 | `IKeyedDataSource.Key` (set before `InitializeAsync`) | `TUnit.Core.Interfaces` | interface | `Data/MoreDataSources.cs` | `MoreDataSourceTests.Keyed_fixture_knows_its_key` | 1.6x | non-nullable `string` |
 | `TestBuilderContext.Current.StateBag` / `TestMetadata.Name` | `TUnit.Core` | property | `Context/SessionArtifacts.cs` | `TestBuilderContextTests` | ≤1.61 | discovery-time state copied into `TestContext.StateBag` |
 
-### Extension points — `TUnit.Patterns 1.65.68/Extensions`, `TUnit.Mixed 1.65.68/CancellationTests.cs`
+### Extension points — `TUnit.Patterns 1.67.0/Extensions`, `TUnit.Mixed 1.67.0/CancellationTests.cs`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -86,23 +107,26 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `ITestStartEventReceiver` / `ITestEndEventReceiver` on an attribute | `TUnit.Core.Interfaces` | interface | `Extensions/StopwatchAttribute.cs` | `EventReceiverTests` | ≤1.61 | `Order` required |
 | `EventReceiverStage.Early` | `TUnit.Core.Enums` | enum | `Extensions/StopwatchAttribute.cs` | `EventReceiverTests` (start before `[Before(Test)]`, end before `[After(Test)]`) | 1.6x | |
 | `SkipAttribute.ShouldSkip(TestRegisteredContext)` | `TUnit.Core` | method | `Extensions/SkipOnAttribute.cs` | `SkipTests` | ≤1.61 | registration-time decision |
-| `[Before(Test)]` / `[After(Test)]` with `TestContext` parameter | `TUnit.Core` | attribute | `Extensions/ExtensionTests.cs`, `TUnit.Mixed 1.65.68/BasicTests.cs` | `EventReceiverTests` | ≤1.61 | |
-| `[Before(Class)]` / `[After(Class)]` (`ClassHookContext`), `[Before(TestSession)]` / `[After(TestSession)]` (`TestSessionContext`) | `TUnit.Core` | attribute | `TUnit.Mixed 1.65.68/BasicTests.cs`, `HooksAndLifecycle.cs` | run of `TUnit.Mixed` | ≤1.61 | |
-| `TestContext.Execution.Cancel()` | `TUnit.Core` | method | `TUnit.Mixed 1.65.68/CancellationTests.cs` | `PerTestCancellationShowcase` (`[Explicit]`) | 1.64.0 | per-test cancellation |
-| `TestContext.Execution.AddLinkedCancellationToken` | `TUnit.Core` | method | `TUnit.Mixed 1.65.68/CancellationTests.cs` | `BeforeHookLinkedCancellationShowcase`, `ExecutorLinkedCancellationShowcase` | 1.64.0 | honoured from hooks and executors |
-| `TimeoutAttribute(int)` + injected `CancellationToken` | `TUnit.Core` | attribute | `TUnit.Mixed 1.65.68/CancellationTests.cs` | same | ≤1.61 | |
-| `ExplicitAttribute` | `TUnit.Core` | attribute | `TUnit.Mixed 1.65.68/CancellationTests.cs` | opt-in run | ≤1.61 | |
+| `[Before(Test)]` / `[After(Test)]` with `TestContext` parameter | `TUnit.Core` | attribute | `Extensions/ExtensionTests.cs`, `TUnit.Mixed 1.67.0/BasicTests.cs` | `EventReceiverTests` | ≤1.61 | |
+| `[Before(Class)]` / `[After(Class)]` (`ClassHookContext`), `[Before(TestSession)]` / `[After(TestSession)]` (`TestSessionContext`) | `TUnit.Core` | attribute | `TUnit.Mixed 1.67.0/BasicTests.cs`, `HooksAndLifecycle.cs` | run of `TUnit.Mixed` | ≤1.61 | |
+| `TestContext.Execution.Cancel()` | `TUnit.Core` | method | `TUnit.Mixed 1.67.0/CancellationTests.cs` | `PerTestCancellationShowcase` (`[Explicit]`) | 1.64.0 | per-test cancellation |
+| `TestContext.Execution.AddLinkedCancellationToken` | `TUnit.Core` | method | `TUnit.Mixed 1.67.0/CancellationTests.cs` | `BeforeHookLinkedCancellationShowcase`, `ExecutorLinkedCancellationShowcase` | 1.64.0 | honoured from hooks and executors |
+| `TimeoutAttribute(int)` + injected `CancellationToken` | `TUnit.Core` | attribute | `TUnit.Mixed 1.67.0/CancellationTests.cs` | same | ≤1.61 | |
+| exception thrown while a test handles its timeout kept in the result | engine | — | `TUnit.Mixed 1.67.0/CancellationTests.cs` | `TimeoutDiagnosticsShowcase` (`[Explicit]`; run output: `timed out after 00:00:00.1000000` + `Task exception: OperationCanceledException: database container still starting…`) | 1.66.0 | timeout classification race fixed in 1.67.0 |
+| `ExplicitAttribute` | `TUnit.Core` | attribute | `TUnit.Mixed 1.67.0/CancellationTests.cs` | opt-in run | ≤1.61 | |
 | `IHookExecutor` (10 methods, `MethodMetadata.Name`) + `HookExecutorAttribute<T>` | `TUnit.Core.Interfaces` / `TUnit.Core.Executors` | interface, attribute | `Extensions/RecordingHookExecutor.cs`, `Extensions/RegistrationTests.cs` | `RegistrationTests.Hook_ran_through_the_custom_executor` | ≤1.61 | |
-| `ITestRegisteredEventReceiver` + `TestRegisteredContext.SetHookExecutor` / `SetParallelLimiter` | `TUnit.Core.Interfaces` / `TUnit.Core` | interface, method | `Extensions/RegistrationAttributes.cs` | `RegistrationTests.Registration_receiver_installed_the_hook_executor` (`Execution.CustomHookExecutor`) | ≤1.61 | no `SetTestExecutor` in 1.65.68 |
+| `ITestRegisteredEventReceiver` + `TestRegisteredContext.SetHookExecutor` / `SetParallelLimiter` | `TUnit.Core.Interfaces` / `TUnit.Core` | interface, method | `Extensions/RegistrationAttributes.cs` | `RegistrationTests.Registration_receiver_installed_the_hook_executor` (`Execution.CustomHookExecutor`) | ≤1.61 | |
+| `TestRegisteredContext.SetTestExecutor` with an executor that is also an `ITestRegisteredEventReceiver` | `TUnit.Core` | method | `Extensions/ExecutorRegistration.cs` | `ExecutorRegistrationTests.Installed_executor_receives_its_registration_callback_once` (count == 1, `Parallelism.Limiter` is the executor's) | 1.67.0 | installed receivers run after their installer, once per instance (reference identity); never called on 1.65.68 |
+| explicit `[ParallelLimiter<T>]` over `SetParallelLimiter` from a receiver or executor | `TUnit.Core` | attribute | `Extensions/ExecutorRegistrationTests.cs` | `ExecutorRegistrationTests.Explicit_limiter_beats_the_executor_default` | 1.67.0 | independent of callback order; an explicit limit may also be wider |
 | `ITestDiscoveryEventReceiver.OnTestDiscovered` + `DiscoveredTestContext.TestContext.StateBag` | `TUnit.Core.Interfaces` | interface | `Extensions/RegistrationAttributes.cs` | `RegistrationTests.Discovery_receiver_assigned_an_id` | ≤1.61 | docs' Global Test IDs pattern |
 | `ILastTestInClassEventReceiver` / `ILastTestInAssemblyEventReceiver` / `ILastTestInTestSessionEventReceiver` | `TUnit.Core.Interfaces` | interface | `Extensions/RegistrationAttributes.cs` | `RegistrationTests.Last_test_in_class_was_observed` (`[After(Class)]`) | ≤1.61 | |
 | `DisplayNameFormatterAttribute.FormatDisplayName(DiscoveredTestContext)` | `TUnit.Core` | class | `Extensions/RegistrationAttributes.cs` | `RegistrationTests.Formatter_rewrites_the_display_name` (`--list-tests` shows `[…]`) | ≤1.61 | |
 | `Skip.When` / `Skip.Unless` / `Skip.Test` | `TUnit.Core` | method | `Extensions/RegistrationTests.cs` | `SkipAndInconclusiveTests` (one run-time skip) | ≤1.61 | |
-| `InconclusiveTestException` | `TUnit.Core.Exceptions` | class | `Extensions/RegistrationTests.cs` | `SkipAndInconclusiveTests.Inconclusive_at_run_time` (`[Explicit]`) | ≤1.61 | reported as failed on 1.65.68 |
+| `InconclusiveTestException` | `TUnit.Core.Exceptions` | class | `Extensions/RegistrationTests.cs` | `SkipAndInconclusiveTests.Inconclusive_at_run_time` (`[Explicit]`) | ≤1.61 | reported as failed on 1.67.0 |
 | `TestContext.Parameters.TryGetValue` (`--test-parameter key=value`) | `TUnit.Core` | property | `Extensions/RegistrationTests.cs` | `SkipAndInconclusiveTests.Test_parameters_come_from_the_command_line` (run with `environment=staging`) | ≤1.61 | |
-| `[assembly: Culture]` / `[assembly: Category]` | `TUnit.Core.Executors` / `TUnit.Core` | attribute | `TUnit.Patterns.Policies 1.65.68/AssemblyPolicies.cs` | `PolicyTests` | ≤1.61 | `Metadata.TestDetails.Categories` |
+| `[assembly: Culture]` / `[assembly: Category]` | `TUnit.Core.Executors` / `TUnit.Core` | attribute | `TUnit.Patterns.Policies 1.67.0/AssemblyPolicies.cs` | `PolicyTests` | ≤1.61 | `Metadata.TestDetails.Categories` |
 
-### Assertions — `TUnit.Patterns 1.65.68/Assertions`
+### Assertions — `TUnit.Patterns 1.67.0/Assertions`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -112,37 +136,41 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `.And` / `.Or` chaining on generated assertions | `TUnit.Assertions` | — | `Assertions/AssertionTests.cs` | `AssertionTests.Generated_assertions_chain`, `Or_short_circuits_on_the_first_pass` | ≤1.61 | |
 | `Assert.That(Func<Task>).Throws<T>()` → `AssertionException` | `TUnit.Assertions.Exceptions` | method | `Assertions/AssertionTests.cs` | same | ≤1.61 | |
 | `.All().Satisfy(x => x.IsEqualTo(...))` | `TUnit.Assertions` | method | `Retry/RetryTests.cs` | `RetryTests` | ≤1.61 | lambda receives an `IAssertionSource<T>` |
+| `Assert.That(Type?)` → `TypeValueAssertion.IsAssignableTo<T>` / `IsAssignableFrom<T>` / `IsNotAssignableTo<T>` / `IsNotAssignableFrom<T>` | `TUnit.Assertions.Sources` | class, method | `Assertions/TypeAssertionTests.cs` | `TypeAssertionTests.Generic_assignability_evaluates_the_represented_type` | 1.66.0 | evaluated `RuntimeType` before |
+| `IsAssignableTo(Type)` / `IsAssignableFrom(Type)` on a `Type` source | `TUnit.Assertions.Extensions` | method | `Assertions/TypeAssertionTests.cs` | `TypeAssertionTests.Runtime_type_overloads_take_a_type_argument`, `Failure_names_the_represented_types` | 1.66.0 | source-generated from `TypeAssertionExtensions` |
+| type assignability behind `.And` / `.Or` | `TUnit.Assertions` | — | `Assertions/TypeAssertionTests.cs` | `TypeAssertionTests.Chained_assignability_inspects_the_runtime_type` | 1.66.0 | checks `RuntimeType` again (see divergences) |
+| `Assert.Multiple()` with concurrent failures; `.Or` chain inside it | `TUnit.Assertions` | method | `Assertions/MultipleTests.cs` | `MultipleTests` (all 8 × 250 failures in the inner `AggregateException`; an independent failure survives a passing `.Or`) | 1.66.16 | 1.65.68 kept 1495 of 2000 |
 
-### Context and artifacts — `TUnit.Patterns 1.65.68/Context`
+### Context and artifacts — `TUnit.Patterns 1.67.0/Context`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
 | `PropertyAttribute(name, value)` + `Metadata.TestDetails.CustomProperties` | `TUnit.Core` | attribute, property | `Context/ContextTests.cs` | `ContextTests.Custom_properties_are_readable_at_run_time`, `--treenode-filter "/*/*/*/*[Owner=platform]"` | ≤1.61 | |
-| `TestContext.Isolation.UniqueId` / `GetIsolatedName` | `TUnit.Core.Interfaces.ITestIsolation` | property, method | `Context/ContextTests.cs` | `ContextTests.Isolation_helpers_produce_unique_resource_names` | 1.6x | `Test_{id}_{name}` |
+| `TestContext.Isolation.UniqueId` / `GetIsolatedName` / `GetIsolatedPrefix` | `TUnit.Core.Interfaces.ITestIsolation` | property, method | `Context/ContextTests.cs` | `ContextTests.Isolation_helpers_produce_unique_resource_names` | 1.66.16 | `test_{id}_{name}` (was `Test_{id}_{name}`, breaking) · `test{sep}{id}{sep}` |
 | `TestContext.ResultsDirectory` (static) | `TUnit.Core` | property | `Context/ContextTests.cs` | `ContextTests.Artifacts_land_in_the_results_directory` | 1.64.6 | honours `--results-directory` |
 | `TestContext.Output.AttachArtifact(path, displayName:, description:)` | `TUnit.Core.Interfaces.ITestOutput` | method | `Context/ContextTests.cs` | same (artifact listed in run output) | ≤1.61 | |
 | `TestContext.Metadata.TestDetails.TestId` | `TUnit.Core` | property | (used during development) | — | ≤1.61 | stable per test case |
 | `TestSessionContext.Current.AddArtifact(Artifact)` | `TUnit.Core` | method | `Context/SessionArtifacts.cs` | run output lists `session-info.txt` | ≤1.61 | `[Before(TestSession)]` |
 
-### Dynamic tests — `TUnit.Patterns 1.65.68/Dynamic`
+### Dynamic tests — `TUnit.Patterns 1.67.0/Dynamic`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
 | `DynamicTestBuilderAttribute` + `DynamicTestBuilderContext.AddTest` | `TUnit.Core` | attribute, method | `Dynamic/DynamicTests.cs` | `DynamicTests.Greets` ×3 | ≤1.61 | |
 | `DynamicTest<T> { TestMethod, TestMethodArguments, Attributes }` + `DynamicTestHelper.Argument<T>()` | `TUnit.Core` | class | `Dynamic/DynamicTests.cs` | same | ≤1.61 | lambda is an expression, not a delegate |
 
-### Fixtures and injection — `TUnit.Patterns 1.65.68/Fixtures`, `TUnit.Mixed 1.65.68`, `TUnit 1.65.68`
+### Fixtures and injection — `TUnit.Patterns 1.67.0/Fixtures`, `TUnit.Mixed 1.67.0`, `TUnit 1.67.0`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
 | `ClassDataSourceAttribute<T>` on a `required` property (test class and fixture) | `TUnit.Core` | attribute | `Fixtures/Fixtures.cs`, `Fixtures/FixtureTests.cs` | `NestedInjectionTests.Nested_property_is_initialized_before_its_owner` | ≤1.61 | dependency-ordered init |
 | `SharedType.Keyed` + `Key` | `TUnit.Core` | enum, property | `Fixtures/Fixtures.cs` | `NestedInjectionTests.Keyed_sharing_hands_out_the_same_instance` | ≤1.61 | same instance across property and parameter injection |
-| `SharedType.PerClass` / `PerTestSession` | `TUnit.Core` | enum | `TUnit.Mixed 1.65.68/DependencyInjectionTests.cs`, `TUnit 1.65.68/Tests.cs` | run of those projects | ≤1.61 | |
-| `IAsyncInitializer` / `IAsyncDisposable` on fixtures | `TUnit.Core.Interfaces` | interface | `Fixtures/Fixtures.cs`, `TUnit.Mixed 1.65.68/Data/InMemoryDb.cs` | `NestedInjectionTests` | ≤1.61 | |
+| `SharedType.PerClass` / `PerTestSession` | `TUnit.Core` | enum | `TUnit.Mixed 1.67.0/DependencyInjectionTests.cs`, `TUnit 1.67.0/Tests.cs` | run of those projects | ≤1.61 | |
+| `IAsyncInitializer` / `IAsyncDisposable` on fixtures | `TUnit.Core.Interfaces` | interface | `Fixtures/Fixtures.cs`, `TUnit.Mixed 1.67.0/Data/InMemoryDb.cs` | `NestedInjectionTests` | ≤1.61 | |
 | `IAsyncDiscoveryInitializer` + `InstanceMethodDataSourceAttribute` | `TUnit.Core.Interfaces` / `TUnit.Core` | interface, attribute | `Fixtures/Fixtures.cs`, `Fixtures/FixtureTests.cs` | `DiscoveryInitializerTests` (2 rows discovered) | 1.6x | discovery-time init |
-| `WebApplicationFactory<Program>` as `ClassDataSource` + `IAsyncInitializer` | `Microsoft.AspNetCore.Mvc.Testing` | class | `TUnit 1.65.68/TUnit 1.65.68/WebApplicationFactory.cs` | `Tests.Test` | ≤1.61 | |
+| `WebApplicationFactory<Program>` as `ClassDataSource` + `IAsyncInitializer` | `Microsoft.AspNetCore.Mvc.Testing` | class | `TUnit 1.67.0/TUnit 1.67.0/WebApplicationFactory.cs` | `Tests.Test` | ≤1.61 | |
 
-### TUnit.Mocks — `TUnit.Mocks 1.65.68`
+### TUnit.Mocks — `TUnit.Mocks 1.67.0`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -156,11 +184,12 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `.Raises{Event}(args)` / `Raise{Event}(args)` / `Events.{Event}.WasSubscribed` / `SubscriberCount` | `TUnit.Mocks` | method, property | `StatefulConnectionTests.cs` | `StatefulConnectionTests` | 1.6x | generated per event |
 | `Returns(async () => …)` keeps the task pending | `TUnit.Mocks` | method | `PendingTaskTests.cs` | `PendingTaskTests.Caller_timeout_beats_a_hanging_feed` | 1.62.0 | net8.0/.NET Framework in 1.63.0 |
 | runtime auto-stubs for ungenerated interfaces | `TUnit.Mocks` | — | `RuntimeAutoStubTests.cs` | `RuntimeAutoStubTests` | 1.63.0 | reuses `DynamicProxyGenAssembly2` identity |
-| `<TUnitMocksExperimentalInternalsAccess>` + `<TUnitMocksInternalsAccess Include>` | MSBuild | config | `TUnit.Mocks 1.65.68.csproj`, `InternalsAccessTests.cs` | `InternalsAccessTests` | 1.63.0 (experimental) | |
+| `<TUnitMocksExperimentalInternalsAccess>` + `<TUnitMocksInternalsAccess Include>` | MSBuild | config | `TUnit.Mocks 1.67.0.csproj`, `InternalsAccessTests.cs` | `InternalsAccessTests` | 1.63.0 (experimental) | |
 | `T.Mock()` on interfaces with `static abstract` members → `Mock<TMockable>`; pass `.Object` | `TUnit.Mocks` | method | `StaticAbstractTests.cs` | `StaticAbstractTests` | 1.65.0 | wrapper is not the interface here |
 | non-generic method next to same-named generic overload | generator | — | `StaticAbstractTests.cs` | `StaticAbstractTests` | 1.65.63 | fix |
+| `T.Mock()` on a class whose base constructor calls virtual / abstract members | generator | — | `ConstructorCallbackTests.cs` | `ConstructorCallbackTests.Base_constructor_calls_are_recorded_on_the_mock` (constructor calls `WasCalled(Times.Once)`) | 1.66.27 | `NullReferenceException` on 1.65.68; construction runs under loose defaults |
 
-### TUnit.Playwright — `TUnit.Playwright 1.65.68` (builds; not executed in this bump)
+### TUnit.Playwright — `TUnit.Playwright 1.67.0` (builds; not executed in this bump)
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -168,7 +197,7 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `PageFixture` via `[ClassDataSource<PageFixture>]` ×2 (shared browser, isolated contexts) | `TUnit.Playwright` | class | `TwoContextFixtureTests.cs` | — | ≤1.61 | |
 | `Microsoft.Playwright.Program.Main(["install"])` in `[Before(TestSession)]` | `Microsoft.Playwright` | method | `Hooks.cs` | — | ≤1.61 | |
 
-### Telemetry — traces, logs, metrics (`TUnit.Patterns 1.65.68/Telemetry`)
+### Telemetry — traces, logs, metrics (`TUnit.Patterns 1.67.0/Telemetry`)
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
@@ -186,35 +215,51 @@ Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.6
 | `MetricCollector<T>` / `FakeLogger<T>` / OpenTelemetry in-memory metric exporter | `Microsoft.Extensions.Diagnostics.Metrics.Testing` / `Microsoft.Extensions.Logging.Testing` / `OpenTelemetry.Metrics` | class | `Telemetry/SignalsTests.cs` | `SignalsTests` | — | framework-neutral; same code as in xunit.v3-4.0.0 |
 | `[LoggerMessage]` + `ActivitySource` + `Meter` in the SUT | `Microsoft.Extensions.Logging` / `System.Diagnostics` | — | `Telemetry/OrderService.cs` | all telemetry tests | — | tests share `[NotInParallel(Telemetry.Key)]` |
 
-### ASP.NET Core — `TUnit 1.65.68` + `TUnit.AspNetCore`
+### ASP.NET Core — `TUnit 1.67.0` + `TUnit.AspNetCore`
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
-| `TestWebApplicationFactory<TEntryPoint>` | `TUnit.AspNetCore` | class | `TUnit 1.65.68/TUnit 1.65.68/WebApplicationFactory.cs` | `Tests.Test`, `TracedWebTests` | 1.6x | replaces vanilla `WebApplicationFactory` (analyzer TUnit0064) |
-| `WebApplicationTest<TFactory, TEntryPoint>` (`Factory`, `Services`, `UniqueId`, `GetIsolatedName`, `GetIsolatedPrefix`) | `TUnit.AspNetCore` | class | `TUnit 1.65.68/TUnit 1.65.68/TracedWebTests.cs` | `TracedWebTests.Isolation_helpers_are_available_on_the_base_class` | 1.6x | per-test isolated factory |
-| `traceparent` / `X-TUnit-TestId` propagation from `Factory.CreateClient()` | `TUnit.AspNetCore` | — | `TUnit 1.65.68/WebApp/Program.cs` (`/trace`) | `TracedWebTests.Server_sees_the_test_trace_and_test_id` | 1.6x | server `Activity.TraceId` == test `TraceId`; header == `TestContext.Id` |
-| server-side `ILogger` routed into the calling test | `TUnit.AspNetCore` | — | `TUnit 1.65.68/WebApp/Program.cs` | `TracedWebTests.Server_side_logs_are_routed_into_this_test` | 1.6x | `CorrelatedTUnitLoggerProvider` + `TUnitTestContextMiddleware` |
-| `WebApplicationTestOptions.EnableHttpExchangeCapture` + `HttpExchangeCapture.Last` | `TUnit.AspNetCore` / `TUnit.AspNetCore.Interception` | property, class | `TUnit 1.65.68/TUnit 1.65.68/TracedWebTests.cs` | `TracedWebTests.Http_exchanges_are_captured_for_assertions` | 1.6x | resolve the store from `Services` (see divergences) |
+| `TestWebApplicationFactory<TEntryPoint>` | `TUnit.AspNetCore` | class | `TUnit 1.67.0/TUnit 1.67.0/WebApplicationFactory.cs` | `Tests.Test`, `TracedWebTests` | 1.6x | replaces vanilla `WebApplicationFactory` (analyzer TUnit0064) |
+| `WebApplicationTest<TFactory, TEntryPoint>` (`Factory`, `Services`, `UniqueId`, `GetIsolatedName`, `GetIsolatedPrefix`) | `TUnit.AspNetCore` | class | `TUnit 1.67.0/TUnit 1.67.0/TracedWebTests.cs` | `TracedWebTests.Isolation_helpers_are_available_on_the_base_class` | 1.6x | per-test isolated factory |
+| `traceparent` / `X-TUnit-TestId` propagation from `Factory.CreateClient()` | `TUnit.AspNetCore` | — | `TUnit 1.67.0/WebApp/Program.cs` (`/trace`) | `TracedWebTests.Server_sees_the_test_trace_and_test_id` | 1.6x | server `Activity.TraceId` == test `TraceId`; header == `TestContext.Id` |
+| server-side `ILogger` routed into the calling test | `TUnit.AspNetCore` | — | `TUnit 1.67.0/WebApp/Program.cs` | `TracedWebTests.Server_side_logs_are_routed_into_this_test` | 1.6x | `CorrelatedTUnitLoggerProvider` + `TUnitTestContextMiddleware` |
+| `WebApplicationTestOptions.EnableHttpExchangeCapture` + `HttpExchangeCapture.Last` | `TUnit.AspNetCore` / `TUnit.AspNetCore.Interception` | property, class | `TUnit 1.67.0/TUnit 1.67.0/TracedWebTests.cs` | `TracedWebTests.Http_exchanges_are_captured_for_assertions` | 1.6x | resolve the store from `Services` (see divergences) |
+
+### Reporting — `TUnit.Patterns.Policies 1.67.0`
+
+| API | Namespace | Kind | Example | Verified by | Since | Note |
+|---|---|---|---|---|---|---|
+| `BeforeTestDiscoveryContext.Settings.Reporting` (`ReportingSettings`) | `TUnit.Core.Settings` | class, property | `TUnit.Patterns.Policies 1.67.0/ReportingPolicy.cs` | `ReportingPolicyTests.Discovery_hook_configured_the_reports` | 1.66.0 | set in `[Before(TestDiscovery)]` |
+| `ReportingSettings.HtmlReportEnabled` / `JsonReportEnabled` | `TUnit.Core.Settings` | property | same | `TestResults/` after a run holds `…-report.html` and no `….tunit-report.json`; a stale sidecar is deleted | 1.66.0 | `TUNIT_DISABLE_HTML_REPORTER` / `TUNIT_DISABLE_JSON_REPORT` take precedence |
+| `ReportingSettings.ArtifactUploadEnabled` | `TUnit.Core.Settings` | property | same | `ReportingPolicyTests` | 1.66.0 | CI artifact upload only; `TUNIT_DISABLE_ARTIFACT_UPLOAD` takes precedence |
 
 ### Native AOT
 
 | API | Namespace | Kind | Example | Verified by | Since | Note |
 |---|---|---|---|---|---|---|
-| `<PublishAot>true</PublishAot>` on a TUnit project | MSBuild | config | `TUnit.Patterns.Policies 1.65.68/TUnit.Patterns.Policies 1.65.68.csproj` | `dotnet publish -c Release -r osx-arm64` → 17 MB Mach-O arm64 binary, 10/10 pass | ≤1.61 | source-generated mode needs no reflection |
+| `<PublishAot>true</PublishAot>` on a TUnit project | MSBuild | config | `TUnit.Patterns.Policies 1.67.0/TUnit.Patterns.Policies 1.67.0.csproj` | `dotnet publish -c Release -r osx-arm64` → 18 MB Mach-O arm64 binary, 11/11 pass | ≤1.61 | source-generated mode needs no reflection |
 
-### Present in 1.65.68, no example yet
+### Present in 1.67.0, no example yet
 
-`TUnit.Aspire` (Aspire dashboard / OTLP receiver) · `AutoReceiver.Endpoint` (out-of-process OTLP receiver) · `TracedWebApplicationFactory<T>` wrapper for foreign factories · `HttpExchangeCapture` body options (`CaptureRequestBody`, `MaxBodySize`) · `TUnit.Playwright` at run time (browser install)
+`TUnit.Aspire` (Aspire dashboard / OTLP receiver) · `AutoReceiver.Endpoint` (out-of-process OTLP receiver) · `TracedWebApplicationFactory<T>` wrapper for foreign factories · `HttpExchangeCapture` body options (`CaptureRequestBody`, `MaxBodySize`) · `TUnit.Playwright` at run time (browser install) · `TUnit.Mocks.Http` · `TUnit.Assertions.Should` · `--tunit-report-html-filename` (registered only next to `Microsoft.Testing.Extensions.HtmlReport`)
 
-### Divergences from docs (verified on 1.65.68)
+### Divergences from docs (verified on 1.67.0)
 
 - `ITestRetryEventReceiver.OnTestRetry` is declared in `TUnit.Core` but nothing in the engine invokes it; read `Execution.RetryAttempts` / `CurrentRetryAttempt` instead.
 - `[AssertionFrom]` does not substitute `{parameter}` placeholders in `ExpectationMessage` (only `[GenerateAssertion]` does); `nameof(string.StartsWith)` also fails to generate because of its overloads — point it at a single-overload static helper.
 - `TestContext.GetDisplayName()` does not exist; use `TestContext.Current.Metadata.DisplayName`.
 - `EventReceiverStage.Early` moves the **end** receiver before `[After(Test)]` hooks as well, not only the start receiver before `[Before(Test)]`.
 - The analyzer rejects typed tuple data sources whose element type is `object[]` for an `int[]` parameter (TUnit0001); the 1.65.68 element-wise conversion is reachable through an untyped generator.
-- `TestRegisteredContext.SetTestExecutor` from the extension-points docs does not exist; 1.65.68 offers `SetHookExecutor`, `SetParallelLimiter`, `SetSkipped`.
-- An assembly-level `[ParallelLimiter<T>]` is applied instead of a class-level one (measured: limit 32 at assembly level let a class limited to 2 exceed it); the docs describe Method > Class > Assembly precedence.
+- An assembly-level `[ParallelLimiter<T>]` is applied instead of a class- or method-level one (1.67.0 probe: tests under a class-level and a method-level limiter both report `Parallelism.Limiter` = the assembly's type; on 1.65.68 a class limited to 2 exceeded it under an assembly limit of 32); the docs describe Method > Class > Assembly precedence. The 1.67.0 explicit-over-programmatic fix does not change this.
 - `TUnit.OpenTelemetry` auto-start stays dormant when any listener is attached to the `TUnit` source, and the built-in HTML reporter always is one; `TUNIT_OTEL_AUTOSTART=1` (set before the `Order = int.MaxValue` hook runs) forces it.
 - `InconclusiveTestException` is reported as a failed test, not an inconclusive one.
 - `WebApplicationTest.HttpCapture` returns a store the capture middleware never writes to; the populated `HttpExchangeCapture` is the one registered in the SUT's services.
+- `Assert.That(typeof(X))` uses the represented type only for the first assignability assertion; after `.And` / `.Or` the check runs against the `RuntimeType` object (stated in the XML docs of `TypeValueAssertion`, not in the assertion docs).
+
+## [1.65.68] — 2026-08-29
+
+Packages: `TUnit 1.65.68` · `TUnit.Mocks 1.65.68` · `TUnit.Playwright 1.65.68` · `Microsoft.AspNetCore.Mvc.Testing 10.0.10` · SDK `10.0.400` · `net10.0`
+Projects: `TUnit.Patterns 1.65.68` (196 pass, 2 intentional skips) · `TUnit.Patterns.Policies 1.65.68` (10; also published Native AOT) · `TUnit.Mixed 1.65.68` (29) · `TUnit.Mocks 1.65.68` (15) · `TUnit 1.65.68` + `TUnit.AspNetCore` (5) · `AdvancedPatterns` (10 + 2 key-gated skips) · `TUnit.Playwright 1.65.68` (builds; needs browsers to run)
+Extra packages: `TUnit.OpenTelemetry 1.65.68` · `TUnit.Logging.Microsoft 1.65.68` · `TUnit.AspNetCore 1.65.68` · `OpenTelemetry.Exporter.InMemory 1.18.0` · `Microsoft.Extensions.Diagnostics.Testing 10.9.0` · `Microsoft.Extensions.Logging 10.0.11` · `Microsoft.AspNetCore.Mvc.Testing 10.0.11`
+
+Superseded by the tables above; the 1.65.68 tree is commit `c31ad41`.
