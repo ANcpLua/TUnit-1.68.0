@@ -10,6 +10,9 @@ public class InternalsAccessTests
     // publicizes the compiler's view of it, so the type becomes nameable, source-generator
     // mocked, and fully configurable — runtime-proxy libraries can auto-substitute such
     // types at best, but they can never let a test configure one.
+    //
+    // The swap reaches ReferencePathWithRefAssemblies, not ReferencePath, so an IDE that reads
+    // the latter underlines every IQuotaPolicy below with CS0122 while the build stays clean.
     [Test]
     public async Task Internal_sdk_policy_is_fully_mockable()
     {
