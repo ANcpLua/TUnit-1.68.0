@@ -3,7 +3,7 @@
 > **Copy, not the original.** The tracked copy lives in the `DotNetTests` git repo at
 > `~/RiderProjects/qyl-workspace/DotNetTests/AdvancedPatterns/` (branch `main`, commit `59ab890`),
 > where it is also wired into `DotNetTests.slnx`, `AdvancedPatterns.slnx`, and CI. This folder is an
-> unversioned copy added to the `TUnit 1.68.0` playground solution — the two can drift. Edit the
+> unversioned copy added to the `TUnit 1.68.17` playground solution — the two can drift. Edit the
 > repo copy for anything you want to keep.
 
 High-leverage .NET test architecture patterns distilled from the Agent Framework test-suite review.

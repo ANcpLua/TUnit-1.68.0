@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="TUnit 1.68.17/TUnit 1.68.17/TUnit 1.68.17.csproj" />
+  <Project Path="TUnit 1.68.17/WebApp/WebApp.csproj" />
+  <Project Path="TUnit.Mixed 1.68.17/TUnit.Mixed 1.68.17.csproj" />
+  <Project Path="TUnit.Mocks 1.68.17/TUnit.Mocks 1.68.17/TUnit.Mocks 1.68.17.csproj" />
+  <Project Path="TUnit.Mocks 1.68.17/VendorSdk/VendorSdk.csproj" />
+  <Project Path="AdvancedPatterns/AdvancedPatterns.Tests.csproj" />
+  <Project Path="TUnit.Patterns 1.68.17/TUnit.Patterns 1.68.17.csproj" />
+  <Project Path="TUnit.Patterns.Policies 1.68.17/TUnit.Patterns.Policies 1.68.17.csproj" />
+  <Project Path="TUnit.Playwright 1.68.17/TUnit.Playwright 1.68.17.csproj" />
+</Solution>
