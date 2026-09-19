@@ -11,8 +11,9 @@ public class InternalsAccessTests
     // mocked, and fully configurable — runtime-proxy libraries can auto-substitute such
     // types at best, but they can never let a test configure one.
     //
-    // The swap reaches ReferencePathWithRefAssemblies, not ReferencePath, so an IDE that reads
-    // the latter underlines every IQuotaPolicy below with CS0122 while the build stays clean.
+    // On 1.68.0 an IDE also keeps VendorSdk as a live project reference next to the publicized
+    // copy, and the project's own compilation wins, so every IQuotaPolicy below is underlined
+    // with CS0122 while the build stays clean (#6836, fixed in 1.68.17).
     [Test]
     public async Task Internal_sdk_policy_is_fully_mockable()
     {

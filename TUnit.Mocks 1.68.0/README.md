@@ -21,9 +21,10 @@ with matchers imported globally.
   zero `InternalsVisibleTo` — beyond what runtime-proxy libraries can do. Two things to know before
   copying it: the opt-in is two lines in *this* csproj
   (`<TUnitMocksExperimentalInternalsAccess>` plus a `<TUnitMocksInternalsAccess Include="VendorSdk"/>`
-  item) and dropping either one turns the test into `CS0122`; and an IDE will underline
-  `IQuotaPolicy` red even when `dotnet build` is clean, because the publicized reference is swapped
-  into the compiler's list only (CHANGELOG → *Divergences from docs*; upstream #6836).
+  item) and dropping either one turns the test into `CS0122`; and on 1.68.0 an IDE underlines
+  `IQuotaPolicy` red even when `dotnet build` is clean, because the editor keeps `VendorSdk` as a
+  live project reference next to the publicized copy and the project wins. Fixed in 1.68.17
+  (CHANGELOG → *Divergences from docs*; upstream #6836).
 - `TUnit.Mocks 1.68.0/StaticAbstractTests.cs` — **new in 1.65.0**: `T.Mock()` on an interface
   with `static abstract` members (the generator mocks a derived `…Mockable` view, so pass
   `.Object`), plus the **1.65.63** fix that keeps a non-generic method visible next to its
